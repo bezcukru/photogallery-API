@@ -3,6 +3,10 @@ import '../sass/style.scss';
 class Dog {
     constructor() {
         this.apiUrl = 'https://dog.ceo/api';
+        this.imgEl = document.querySelector('.featured-dog img');
+        this.backgroundEl = document.querySelector('.featured-dog__background')
+
+        this.init();
     }
 listBreeds() {
     return fetch(`${this.apiUrl}/breeds/list/all`)
@@ -24,7 +28,17 @@ getRandomImageByBreed(breed) {
         .then(resp => resp.json())
         .then(data => data.message);
 }
-}
 
-const imgTag = document.querySelector('img');
-getRandomImageByBreed('papillon').then(imgSrc => imgTag.setAttribute('src', imgSrc))
+init() {
+    this.getRandomImage()
+        .then(src => {
+            this.imgEl.setAttribute('src', src);
+            this.backgroundEl.style.backgroundImage = `url("${src}")`;
+        }),
+    this.listBreeds()
+        .then(breeds => console.log(breeds));
+}};
+
+document.addEventListener('DOMContentLoaded', () => {
+    new Dog();
+});
