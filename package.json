@@ -9,7 +9,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --inline --progress --colors --open",
+    "start": "webpack-dev-server --inline --progress --colors",
     "build": "webpack"
   },
   "keywords": [
