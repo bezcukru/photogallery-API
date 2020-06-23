@@ -6,9 +6,20 @@ class Dog {
         this.imgEl = document.querySelector('.featured-dog img');
         this.backgroundEl = document.querySelector('.featured-dog__background')
         this.tilesEl = document.querySelector('.tiles');
-        this.descriptionName = document.querySelector('.featured-dog__description--name');
+        this.descriptionEl = document.querySelector('.featured-dog__description');
+        this.spinnerEl = document.querySelector('.spinner');
+
         this.init();
     }
+
+showLoading() {
+    this.spinnerEl.classList.add('spinner--visible');
+}
+
+hideLoading() {
+    this.spinnerEl.classList.remove('spinner--visible');
+}
+
 showAllBreeds() {
     return fetch(`${this.apiUrl}/breeds/list/all`)
         .then(resp => resp.json())
@@ -26,18 +37,19 @@ getRandomImage() {
 
 getRandomImageByBreed(breed) {
     return fetch(`${this.apiUrl}/breed/${breed}/images/random`)
-        .then(resp => {
-            resp.json();
-            console.log(breed)})
+        .then(resp => 
+            resp.json())
         .then(data => data.message);
 
 }
 
 init() {
+    this.showLoading();
     this.getRandomImage()
         .then(src => {
             this.imgEl.setAttribute('src', src);
             this.backgroundEl.style.backgroundImage = `url("${src}")`;
+            this.hideLoading();
         }),
     this.showAllBreeds()
         .then(breeds => {
@@ -64,7 +76,7 @@ init() {
             type = breed;
         } else {
             name = `${subBreed} ${breed}`; 
-            type = `${subBreed}/${breed}`; 
+            type = `${breed}/${subBreed}`; 
         }
 
         const tile = document.createElement('div');
@@ -74,11 +86,13 @@ init() {
         tileContent.classList.add('tiles__tile--content');
         tileContent.innerText = name;
         tileContent.addEventListener('click', () => {
+            this.showLoading();
             this.getRandomImageByBreed(type)
              .then(src => {
                 this.imgEl.setAttribute('src', src);
                 this.backgroundEl.style.backgroundImage = `url("${src}")`;
-                
+                this.hideLoading();
+                this.descriptionEl.textContent = `You are now looking at a beautiful ${name}!`;
             });
     });
     tile.appendChild(tileContent);
@@ -90,8 +104,3 @@ init() {
 document.addEventListener('DOMContentLoaded', () => {
     new Dog();
 });
-
-
-// const breedName = document.createElement('p');
-//  breedName.innerText = name;
-// this.descriptionName.appendChild(breedName); 
