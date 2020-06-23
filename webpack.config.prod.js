@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
     entry: './js/app.js',
@@ -28,18 +29,17 @@ module.exports = {
                 use: 'babel-loader'
             },
             {
-                test: /\.scss$/,
-                use: [
-                    'style-loader',
-                    'css-loader',
-                    'sass-loader',
-                ]
-            }
+                test: /\.scss|sass$/,
+                use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
+            },
         ]
     },
 
     plugins: [
         new HtmlWebpackPlugin({template: './index.html'}),
         new webpack.HotModuleReplacementPlugin(),
+        new MiniCssExtractPlugin({
+            filename: '[name]-[contenthash:6].css'
+        }),
     ]
 };
